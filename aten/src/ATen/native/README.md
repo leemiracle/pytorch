@@ -2,6 +2,8 @@ ATen "native" functions are the modern mechanism for adding operators and
 functions to ATen.  Native functions
 are declared in `native_functions.yaml` and have implementations defined
 in one of the `cpp` files in this directory.
+tools/autograd 目录下，gen代码
+添加算子和函数到ATen：`native_functions.yaml` 声明，并在当前cpp文件中实现定义
 
 Like all ATen methods/functions, native functions are made available
 from both ATen's C++ and Python APIs.  In C++, they are made available
@@ -10,9 +12,19 @@ namespace (`at::myfunc()`).  In PyTorch, they are made available as
 methods on `Variable` or as functions on `torch._C._FunctionBase`.
 (It is the user's responsibility to re-export these functions in
 a more user-facing module.)
+作用于Tensor的methods；functions则是定义在at命名空间下
 
 The rest of this document describes how to implement an ATen function.
-
+## 以下如何实现aten函数：
+1. 在`native_functions.yaml`内定义
+2. 写一个c++实现（native、cuda目录）
+  1. 是否会自动微分？调度（tools/autograd/derivatives.yaml关联），原算子组合操作则不需要
+  2. 合适的调度key:用dispatch配置
+     1. 你定义的算子是否适用所有后端？
+     2. 检查是否支持autograd
+  3. 验证计算的调度表是否与所需值匹配： torch/_python_dispatcher.py 中提供的 PythonDispatcher
+  4. 是否将函数暴露给Python？ 在tools/autograd/gen_python_functions.py中查看过滤
+3. 调试建议 
 ## Registering a function in `native_functions.yaml`
 
 Every native function must have an entry in
