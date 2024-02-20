@@ -8,7 +8,7 @@
 ################################################################################
 # Helper functions
 ################################################################################
-
+# 过滤
 function(filter_list output input)
     unset(result)
     foreach(filename ${${input}})
@@ -34,12 +34,26 @@ function(filter_list_exclude output input)
 endfunction()
 
 ################################################################################
-
+# 基本语法：configure_file(input_file output_file [@ONLY] [ESCAPE_QUOTES] [NEWLINE_STYLE [UNIX|WIN32|LF|CRLF|CR]])
+# 主要作用是将一个模板文件进行替换处理，生成一个新的文件
 # ---[ Write the macros file
 configure_file(
     ${CMAKE_CURRENT_LIST_DIR}/../caffe2/core/macros.h.in
     ${CMAKE_BINARY_DIR}/caffe2/core/macros.h)
-
+# 主要作用是指定将哪些文件或目标安装到系统的哪个位置。在构建项目时，可以使用install()函数来指定安装规则，以便在安装阶段将生成的文件或目标复制到指定的位置
+/* 语法：install(
+    [TARGETS <targets>...]
+    [EXPORT <export-name>]
+    [ARCHIVE DESTINATION <archive-dir>]
+    [LIBRARY DESTINATION <library-dir>]
+    [RUNTIME DESTINATION <runtime-dir>]
+    [INCLUDES DESTINATION <include-dir>]
+    [FILES <files>...]
+    [DIRECTORY <dir>...]
+    [COMPONENT <component>]
+    [OPTIONAL]
+)
+*/
 # ---[ Installing the header files
 install(DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/../caffe2
         DESTINATION include
@@ -64,11 +78,14 @@ if(INTERN_BUILD_ATEN_OPS)
   endif(MSVC)
 
   if(NOT MSVC AND NOT "${CMAKE_C_COMPILER_ID}" MATCHES "Clang")
+  # set_source_files_properties(source1 [source2 ...] PROPERTIES prop1 value1 [prop2 value2 ...])
+  # 设置源文件属性的函数：编译选项、编译器定义等
     set_source_files_properties(${CMAKE_CURRENT_LIST_DIR}/../aten/src/ATen/MapAllocator.cpp PROPERTIES COMPILE_FLAGS "-fno-openmp")
   endif()
-
+# 用来执行各种文件操作，例如检查文件是否存在、复制文件、删除文件等
+# all_python： 满足匹配条件
   file(GLOB_RECURSE all_python "${CMAKE_CURRENT_LIST_DIR}/../torchgen/*.py")
-
+# 设置变量
   set(GEN_ROCM_FLAG)
   if(USE_ROCM)
     set(GEN_ROCM_FLAG --rocm)
@@ -114,6 +131,7 @@ if(INTERN_BUILD_ATEN_OPS)
     file(GLOB_RECURSE all_unboxing_script "${CMAKE_CURRENT_LIST_DIR}/../tools/jit/*.py")
     list(APPEND CUSTOM_BUILD_FLAGS --skip_dispatcher_op_registration)
     set(GEN_UNBOXING_COMMAND
+        # 执行当前模块函数
         "${PYTHON_EXECUTABLE}" -m tools.jit.gen_unboxing
         --source-path ${CMAKE_CURRENT_LIST_DIR}/../aten/src/ATen
         --install_dir ${CMAKE_BINARY_DIR}/aten/src/ATen
@@ -135,7 +153,6 @@ if(INTERN_BUILD_ATEN_OPS)
     if(NOT RETURN_VALUE EQUAL 0)
       message(FATAL_ERROR "Failed to get generated_unboxing_sources list")
     endif()
-
     include("${CMAKE_BINARY_DIR}/aten/src/ATen/generated_unboxing_sources.cmake")
     add_custom_command(
         COMMENT "Generating ATen unboxing sources"
@@ -151,12 +168,13 @@ if(INTERN_BUILD_ATEN_OPS)
   else() # Otherwise do not generate or include sources into build.
     set(generated_unboxing_sources "")
   endif()
-
+# --------USE_LIGHTWEIGHT_DISPATCH----------
+# -算子
   set(GEN_PER_OPERATOR_FLAG)
   if(USE_PER_OPERATOR_HEADERS)
     list(APPEND GEN_PER_OPERATOR_FLAG "--per-operator-headers")
   endif()
-
+  # GEN_COMMAND命令= torchgen.gen执行 （当前模块）: Generate ATen source files
   set(GEN_COMMAND
       "${PYTHON_EXECUTABLE}" -m torchgen.gen
       --source-path ${CMAKE_CURRENT_LIST_DIR}/../aten/src/ATen
@@ -169,6 +187,7 @@ if(INTERN_BUILD_ATEN_OPS)
 
   file(GLOB_RECURSE headers_templates "${CMAKE_CURRENT_LIST_DIR}/../aten/src/ATen/templates/*\.h")
   file(GLOB_RECURSE sources_templates "${CMAKE_CURRENT_LIST_DIR}/../aten/src/ATen/templates/*\.cpp")
+  # 反向算子配置
   set(declarations_yaml_templates "")
 
   foreach(gen_type "headers" "sources" "declarations_yaml")
@@ -179,14 +198,15 @@ if(INTERN_BUILD_ATEN_OPS)
     # included below to set the list of output files. If that file
     # ever changes then cmake will be re-run automatically because it
     # was included and so we get fully dynamic outputs.
-
+    # torchgen.gen 参数执行，输出generated_${gen_type}.cmake：
+    # CMAKE_BINARY_DIR = build
     set("GEN_COMMAND_${gen_type}"
         ${GEN_COMMAND}
         --generate ${gen_type}
         --output-dependencies ${CMAKE_BINARY_DIR}/aten/src/ATen/generated_${gen_type}.cmake
     )
 
-    # Dry run to bootstrap the output variables
+    # Dry run to bootstrap the output variables： 只生成变量
     execute_process(
         COMMAND ${GEN_COMMAND_${gen_type}} --dry-run
         RESULT_VARIABLE RETURN_VALUE
@@ -201,12 +221,30 @@ if(INTERN_BUILD_ATEN_OPS)
     include("${CMAKE_BINARY_DIR}/aten/src/ATen/core_generated_${gen_type}.cmake")
     include("${CMAKE_BINARY_DIR}/aten/src/ATen/cpu_vec_generated_${gen_type}.cmake")
     include("${CMAKE_BINARY_DIR}/aten/src/ATen/cuda_generated_${gen_type}.cmake")
+    # ops_generated_${gen_type}.cmake: 设置变量
     include("${CMAKE_BINARY_DIR}/aten/src/ATen/ops_generated_${gen_type}.cmake")
 
     message(STATUS "${gen_type} outputs: ${gen_outputs}")
-
+    # 构建过程中添加自定义的命令。这些命令可以是任何需要在构建过程中执行的自定义操作
+    /*add_custom_command(
+        OUTPUT output1 [output2 ...]
+        COMMAND command1 [args1...]
+        [COMMAND command2 [args2...] ...]
+        [MAIN_DEPENDENCY depend]
+        [DEPENDS [depend depend ...]]
+        [WORKING_DIRECTORY dir]
+        [COMMENT comment]
+        [VERBATIM]
+        [APPEND]
+        [USES_TERMINAL]
+        [BYPRODUCTS [files...]]
+        [IMPLICIT_DEPENDS <lang1> dep1 ...]
+        [COMMAND_EXPAND_LISTS]
+        [OUTPUT_STRIP_TRAILING_WHITESPACE]
+    )
+    */
     add_custom_command(
-      COMMENT "Generating ATen ${gen_type}"
+      COMMENT "Generating ATen ${gen_type}" # "headers" "sources" "declarations_yaml"
       OUTPUT
         ${generated_${gen_type}}
         ${cuda_generated_${gen_type}}
@@ -220,6 +258,7 @@ if(INTERN_BUILD_ATEN_OPS)
         ${CMAKE_BINARY_DIR}/aten/src/ATen/cuda_generated_${gen_type}.cmake
       COMMAND ${GEN_COMMAND_${gen_type}}
       DEPENDS ${all_python} ${${gen_type}_templates}
+        # 配置算子
         ${CMAKE_CURRENT_LIST_DIR}/../aten/src/ATen/native/native_functions.yaml
         ${CMAKE_CURRENT_LIST_DIR}/../aten/src/ATen/native/tags.yaml
       WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/..
@@ -241,6 +280,9 @@ if(INTERN_BUILD_ATEN_OPS)
   add_dependencies(ATEN_CUDA_FILES_GEN_LIB ATEN_CUDA_FILES_GEN_TARGET)
 
   if(USE_PER_OPERATOR_HEADERS)
+      # 用于向特定目标添加编译器定义。编译器定义是在编译源代码时提供给预处理器的符号或宏。
+      # target_compile_definitions(target_name <INTERFACE|PUBLIC|PRIVATE> [definitions...])
+
     target_compile_definitions(ATEN_CPU_FILES_GEN_LIB INTERFACE AT_PER_OPERATOR_HEADERS)
     target_compile_definitions(ATEN_CUDA_FILES_GEN_LIB INTERFACE AT_PER_OPERATOR_HEADERS)
   endif()
