@@ -1,5 +1,6 @@
 # This file used to build libtorch.so.
-# Now it only builds the Torch python bindings.
+# Now it only builds the Torch python bindings. 只构建Python绑定
+# 如何与tools/autograd/的gen 联系在一起？
 
 if(NOT CAFFE2_CMAKE_BUILDING_WITH_MAIN_REPO)
   cmake_minimum_required(VERSION 3.18 FATAL_ERROR)
@@ -215,7 +216,7 @@ add_custom_command(
     "${TORCH_SRC_DIR}/_C/_VariableFunctions.pyi"
     "${TORCH_SRC_DIR}/nn/functional.pyi"
     COMMAND
-    "${PYTHON_EXECUTABLE}" -mtools.pyi.gen_pyi
+    "${PYTHON_EXECUTABLE}" -mtools.pyi.gen_pyi  # 由native_functions.yaml 生成pyi文件
       --native-functions-path "aten/src/ATen/native/native_functions.yaml"
       --tags-path "aten/src/ATen/native/tags.yaml"
       --deprecated-functions-path "tools/autograd/deprecated.yaml"
@@ -373,7 +374,7 @@ if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
 else()
   set(TORCH_VERSION_DEBUG 0)
 endif()
-
+# 生成torch版本
 add_custom_command(
   OUTPUT ${TORCH_SRC_DIR}/version.py
   COMMAND "${CMAKE_COMMAND}" -E touch "${TOOLS_PATH}/generate_torch_version.py"
