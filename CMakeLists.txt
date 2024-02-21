@@ -1,3 +1,9 @@
+# 处理opt可选项，设置build变量，如Caffe2_DEPENDENCY_LIBS；将文件install到合适的位置
+#   可通过cmake -L：查看cmake变量等
+#   构建系统：被组织成一组高级逻辑“目标”。每个目标对应于一个可执行文件或库，或者是一个包含“自定义命令”的自定义目标。
+#      在构建系统中表达目标之间的“依赖关系”，以确定构建顺序和根据变化重新生成的规则。
+
+# cmake 版本不低于3.18
 cmake_minimum_required(VERSION 3.18 FATAL_ERROR)
 #cmake_policy(SET CMP0022 NEW)
 #cmake_policy(SET CMP0023 NEW)
@@ -5,22 +11,27 @@ cmake_minimum_required(VERSION 3.18 FATAL_ERROR)
 # Use compiler ID "AppleClang" instead of "Clang" for XCode.
 # Not setting this sometimes makes XCode C compiler gets detected as "Clang",
 # even when the C++ one is detected as "AppleClang".
+# xcode编译：c++ 会被检测为AppleClang，c可能被检测为clang
 cmake_policy(SET CMP0010 NEW)
 cmake_policy(SET CMP0025 NEW)
 
+# 使 CMake 能够在 Intel 以外的编译器上设置 LTO。
 # Enables CMake to set LTO on compilers other than Intel.
 cmake_policy(SET CMP0069 NEW)
 # Enable the policy for CMake subprojects.
 # protobuf currently causes issues
+# 策略对子项目生效：protobuf会有问题
 #set(CMAKE_POLICY_DEFAULT_CMP0069 NEW)
 
 # Suppress warning flags in default MSVC configuration.  It's not
 # mandatory that we do this (and we don't if cmake is old), but it's
 # nice when it's possible, and it's possible on our Windows configs.
+# 默认的MSVC(Microsoft Visual C++ )配置：Windows配置
 cmake_policy(SET CMP0092 NEW)
 
 # ---[ Project and semantic versioning.
-project(Torch CXX C)
+# 项目和语义版本控制
+project(Torch CXX C) # 告诉 CMake 你正在构建一个名为 "Torch" 的项目，并且该项目将使用 C++ (CXX) 和 C (C) 作为支持的语言
 
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
   set(LINUX TRUE)
@@ -31,17 +42,17 @@ endif()
 set(CMAKE_INSTALL_MESSAGE NEVER)
 
 # check and set CMAKE_CXX_STANDARD
-string(FIND "${CMAKE_CXX_FLAGS}" "-std=c++" env_cxx_standard)
+string(FIND "${CMAKE_CXX_FLAGS}" "-std=c++" env_cxx_standard) # 检查和设置c++ 协议？cmake -L
 if(env_cxx_standard GREATER -1)
   message(
       WARNING "C++ standard version definition detected in environment variable."
       "PyTorch requires -std=c++17. Please remove -std=c++ settings in your environment.")
 endif()
-set(CMAKE_CXX_STANDARD 17 CACHE STRING "The C++ standard whose features are requested to build this target.")
+set(CMAKE_CXX_STANDARD 17 CACHE STRING "The C++ standard whose features are requested to build this target.") # 标准为17
 set(CMAKE_C_STANDARD   11 CACHE STRING "The C standard whose features are requested to build this target.")
 
 # ---[ Utils
-include(cmake/public/utils.cmake)
+include(cmake/public/utils.cmake) #包含名为 "utils.cmake" 的外部 CMake 脚本文件（包含一些实用函数或宏），可以在项目的多个 CMakeLists.txt 文件中重复使用
 
 # --- [ Check that minimal gcc version is 9.4+
 if(CMAKE_COMPILER_IS_GNUCXX AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 9.4)
@@ -50,10 +61,11 @@ endif()
 
 # This define is needed to preserve behavior given anticpated changes to cccl/thrust
 # https://nvidia.github.io/libcudacxx/standard_api/numerics_library/complex.html
+# 向 CMake 的 CUDA 编译器标志 (CMAKE_CUDA_FLAGS) 中追加一个选项 
 string(APPEND CMAKE_CUDA_FLAGS "-DLIBCUDACXX_ENABLE_SIMPLIFIED_COMPLEX_OPERATIONS")
 
 if(LINUX)
-  include(cmake/CheckAbi.cmake)
+  include(cmake/CheckAbi.cmake) # CheckAbi.cmake
   string(APPEND CMAKE_CXX_FLAGS " -D_GLIBCXX_USE_CXX11_ABI=${GLIBCXX_USE_CXX11_ABI}")
   string(APPEND CMAKE_CUDA_FLAGS " -D_GLIBCXX_USE_CXX11_ABI=${GLIBCXX_USE_CXX11_ABI}")
   if(${GLIBCXX_USE_CXX11_ABI} EQUAL 1)
@@ -144,10 +156,12 @@ if(APPLE)
     endif()
   endif()
 endif()
+######
 
 set(CPU_AARCH64 OFF)
 set(CPU_INTEL OFF)
 
+# cpu 架构
 if(CMAKE_SYSTEM_PROCESSOR MATCHES "(AMD64|x86_64)")
   set(CPU_INTEL ON)
 elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "^(aarch64|arm64)")
@@ -157,6 +171,7 @@ endif()
 
 # For non-supported platforms, turn USE_DISTRIBUTED off by default.
 # It is not tested and likely won't work without additional changes.
+# 它未经测试，如果没有额外的更改，可能无法工作。
 if(NOT LINUX AND NOT WIN32)
   set(USE_DISTRIBUTED OFF CACHE STRING "Use distributed")
   # On macOS, if USE_DISTRIBUTED is enabled (specified by the user),
@@ -169,6 +184,7 @@ endif()
 # ---[ Options.
 # Note to developers: if you add an option below, make sure you also add it to
 # cmake/Summary.cmake so that the summary prints out the option values.
+# cmake依赖的选项：如果您在下面添加一个选项，请确保您也将其添加到 # cmake/Summary.cmake 以便摘要打印出选项值
 include(CMakeDependentOption)
 option(ATEN_NO_TEST "Do not build ATen test binaries" OFF)
 option(BUILD_BINARY "Build C++ binaries" OFF)
@@ -202,6 +218,7 @@ option(USE_COLORIZE_OUTPUT "Colorize output during compilation" ON)
 option(USE_ASAN "Use Address+Undefined Sanitizers" OFF)
 option(USE_TSAN "Use Thread Sanitizer" OFF)
 option(USE_CUDA "Use CUDA" ON)
+# 依赖选项
 cmake_dependent_option(
     USE_XPU "Use XPU. Only available on Linux." ON
     "LINUX" OFF)
@@ -361,7 +378,7 @@ if(WIN32)
 endif()
 
 if(USE_CCACHE)
-  find_program(CCACHE_PROGRAM ccache)
+  find_program(CCACHE_PROGRAM ccache) # 在系统中查找指定的可执行程序，并将其路径存储在指定的变量中
   if(CCACHE_PROGRAM)
     set(CMAKE_C_COMPILER_LAUNCHER "${CCACHE_PROGRAM}" CACHE STRING "C compiler launcher")
     set(CMAKE_CXX_COMPILER_LAUNCHER "${CCACHE_PROGRAM}" CACHE STRING "CXX compiler launcher")
@@ -456,7 +473,7 @@ option(BUILDING_WITH_TORCH_LIBS "Tell cmake if Caffe2 is being built alongside t
 cmake_dependent_option(
   MSVC_Z7_OVERRIDE "Work around sccache bug by replacing /Zi and /ZI with /Z7 when using MSVC (if you are not using sccache, you can turn this OFF)" ON
   "MSVC" OFF)
-
+# 是否使用onnx
 if(NOT USE_SYSTEM_ONNX)
   set(ONNX_NAMESPACE "onnx_torch" CACHE STRING "A namespace for ONNX; needed to build with other frameworks that share ONNX.")
 else()
@@ -677,7 +694,7 @@ caffe2_parse_version_str(TORCH ${TORCH_BUILD_VERSION})
 caffe2_parse_version_str(CAFFE2 ${TORCH_BUILD_VERSION})
 set(TORCH_SOVERSION "${TORCH_VERSION_MAJOR}.${TORCH_VERSION_MINOR}")
 
-# ---[ CMake scripts + modules
+# ---[ CMake scripts + modules：cmake/Modules
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/Modules)
 
 # ---[ CMake build directories
@@ -704,7 +721,7 @@ if(NOT IOS AND CMAKE_SYSTEM_NAME STREQUAL "Darwin" AND CMAKE_OSX_ARCHITECTURES M
   # We set CMAKE_TRY_COMPILE_TARGET_TYPE to STATIC_LIBRARY (vs executable) to succeed the cmake compiler check for cross-compiling
   set(protoc_build_command "./scripts/build_host_protoc.sh --other-flags -DCMAKE_OSX_ARCHITECTURES=\"x86_64;arm64\" -DCMAKE_TRY_COMPILE_TARGET_TYPE=STATIC_LIBRARY -DCMAKE_C_COMPILER_WORKS=1 -DCMAKE_CXX_COMPILER_WORKS=1")
   # We write to a temp scriptfile because CMake COMMAND dislikes double quotes in commands
-  file(WRITE ${PROJECT_SOURCE_DIR}/tmp_protoc_script.sh "#!/bin/bash\n${protoc_build_command}")
+  file(WRITE ${PROJECT_SOURCE_DIR}/tmp_protoc_script.sh "#!/bin/bash\n${protoc_build_command}") # 执行protoc 命令
   file(COPY ${PROJECT_SOURCE_DIR}/tmp_protoc_script.sh DESTINATION ${PROJECT_SOURCE_DIR}/scripts/ FILE_PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ)
   execute_process(COMMAND ./scripts/tmp_protoc_script.sh
                   WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
@@ -752,7 +769,7 @@ cmake_dependent_option(
   Will be disabled if not supported by the platform" ON
   "USE_CUDA" OFF)
 
-include(cmake/Dependencies.cmake)
+include(cmake/Dependencies.cmake) # Caffe2_DEPENDENCY_LIBS目标
 
 if(DEBUG_CUDA)
   string(APPEND CMAKE_CUDA_FLAGS_DEBUG " -lineinfo")
@@ -968,7 +985,8 @@ endif()
 
 
 if(CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64")
-  include(CheckCSourceCompiles)
+  include(CheckCSourceCompiles) 
+  # 编译代码检查 
   check_c_source_compiles("#include <arm_neon.h>
 int main() {
   float a[] = {1.0, 1.0};
