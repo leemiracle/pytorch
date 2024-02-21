@@ -1,3 +1,6 @@
+# Bazel (Build tool) 使用 .bzl 文件来定义重复使用的函数和宏，以及共享的构建逻辑。使用 .bzl 文件可以帮助简化 BUILD 文件，并提高代码的重用性和可维护性
+# 构建aten算子，生成aten_impl，以及gen aten的规则
+
 load("@bazel_skylib//lib:paths.bzl", "paths")
 load("@rules_cc//cc:defs.bzl", "cc_library")
 
