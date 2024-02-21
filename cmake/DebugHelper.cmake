@@ -1,3 +1,4 @@
+# print_target_properties：学习如何取target的属性
 function(print_target_properties tgt)
   # Get all propreties that cmake supports
   execute_process(COMMAND cmake --help-property-list OUTPUT_VARIABLE CMAKE_PROPERTY_LIST)
