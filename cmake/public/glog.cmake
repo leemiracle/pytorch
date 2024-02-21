@@ -1,3 +1,4 @@
+# glog 是一个 C++ 库，用于记录日志。它提供了简单易用的接口，可以在程序中记录各种级别的日志消息，并支持将日志消息输出到控制台、文件等目标。
 # ---[ glog
 
 # We will try to use the config mode first, and then manual find.
