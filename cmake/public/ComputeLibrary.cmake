@@ -1,3 +1,5 @@
+# 使用 Compute Library 后端构建适用于 Arm 架构的版本
+
 # Build with Compute Library backend for the Arm architecture
 # Note: Compute Library is available from: https://github.com/ARM-software/ComputeLibrary
 #   and must be built separately. The location of the Compute Library build
