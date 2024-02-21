@@ -1,3 +1,4 @@
+# NCCL（NVIDIA Collective Communications Library）是由 NVIDIA 开发的一种用于多 GPU 系统间通信和协作的库。它主要用于加速深度学习模型在多 GPU 环境下的训练过程。
 if(NOT __NCCL_INCLUDED)
   set(__NCCL_INCLUDED TRUE)
 
