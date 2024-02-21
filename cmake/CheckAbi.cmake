@@ -1,3 +1,5 @@
+# 编译执行：torch/abi-check.cpp脚本
+
 if(DEFINED GLIBCXX_USE_CXX11_ABI)
   message(STATUS "_GLIBCXX_USE_CXX11_ABI=${GLIBCXX_USE_CXX11_ABI} is already defined as a cmake variable")
   return()
