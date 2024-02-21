@@ -1,3 +1,9 @@
+# 在 PyTorch 中，Vulkan 的支持意味着你可以利用 Vulkan API 来加速深度学习模型的训练和推理。通过 Vulkan 的并行计算能力，
+#    你可以在支持 Vulkan 的 GPU 上更有效地执行张量操作和神经网络计算，从而提高模型的性能和效率。
+# Vulkan 是指 Vulkan 图形和计算 API。Vulkan 是一种由 Khronos Group 维护的低级图形 API，
+#     旨在提供更高性能和更低的驱动程序开销。它允许开发人员直接控制 GPU，从而实现更高效的图形渲染和计算。
+
+
 # Shaders processing
 if(NOT USE_VULKAN)
   return()
