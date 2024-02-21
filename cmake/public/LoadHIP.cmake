@@ -1,3 +1,7 @@
+# PyTorch 的 HIP 包是 PyTorch 在 AMD GPU 上使用 HIP（Heterogeneous-compute Interface for Portability）后端的支持。
+#     HIP 是由 AMD 开发的一种编程模型和工具集，旨在提供在 AMD GPU 上编写并行计算代码的能力，并且兼容 CUDA，从而使得已经为 CUDA 编写的代码可以比较容易地迁移到 AMD GPU 上运行。
+# ROCm 是由 AMD 开发的开源软件平台，旨在为 AMD GPU 提供更好的支持和优化，并提供一组工具和库来加速深度学习和科学计算工作负载。
+#   HIP是 ROCm 中的一个重要组成部分，它是一个编程模型和工具集，允许开发人员在 AMD GPU 上编写并行计算代码
 set(PYTORCH_FOUND_HIP FALSE)
 
 if(NOT DEFINED ENV{ROCM_PATH})
