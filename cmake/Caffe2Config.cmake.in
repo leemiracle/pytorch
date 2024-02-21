@@ -2,7 +2,7 @@
 # It defines the following variable(s)
 #   CAFFE2_INCLUDE_DIRS     - include directories for FooBar
 # as well as Caffe2 targets for other cmake libraries to use.
-
+# 定义CAFFE2_INCLUDE_DIR 变量：Caffe2中的target 需要【include文件夹】
 # library version information
 
 # Utils functions.
