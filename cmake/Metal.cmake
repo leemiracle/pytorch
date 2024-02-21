@@ -1,3 +1,6 @@
+# PyTorch Metal 是 PyTorch 在 macOS 和 iOS 平台上使用 Metal 图形 API 的支持。
+# Metal 是苹果公司提供的用于编写高性能图形和计算代码的低级图形 API，它可以在 macOS 和 iOS 设备上直接访问 GPU，并提供了与 OpenGL 和 OpenCL 相比更低的开销和更高的性能
+
 if(NOT APPLE)
     return()
 endif()
