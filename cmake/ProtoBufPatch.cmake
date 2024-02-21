@@ -1,3 +1,5 @@
+# 替换 ONNX, Caffe, and Caffe2 proto中的字符串内容
+
 # CMake file to replace the string contents in ONNX, Caffe, and Caffe2 proto.
 # Usage example:
 #   cmake -DFILENAME=caffe2.pb.h -DLOCAL_PROTOBUF=ON -P ProtoBufPatch.cmake
