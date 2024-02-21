@@ -5,7 +5,7 @@
 # Note that adding and / or deleting these variables usually involves
 # changing the whole build system, so make sure you send a PR early if you
 # want to change them.
-
+# Caffe2-wide variables 删除或更新会影响整个build系统
 # Caffe2_{CPU,GPU}_SRCS is the list that will have all the related source
 # files for CPU and GPU respectively. They will be filled with the
 # CMakeLists.txt files under each folder respectively.
@@ -14,6 +14,7 @@ set(Caffe2_GPU_SRCS)
 
 # Caffe2_{CPU,GPU}_TEST_SRCS is the list that will have all the related source
 # files for CPU and GPU tests respectively.
+# SRCS是什么？
 set(Caffe2_CPU_TEST_SRCS)
 set(Caffe2_GPU_TEST_SRCS)
 
@@ -23,6 +24,7 @@ set(Caffe2_CPU_INCLUDE)
 set(Caffe2_GPU_INCLUDE)
 
 # Lists for Caffe2 dependency libraries, for CPU and CUDA respectively.
+# 依赖库
 set(Caffe2_DEPENDENCY_LIBS "")
 set(Caffe2_CUDA_DEPENDENCY_LIBS "")
 # This variable contains dependency libraries of Caffe2 which requires whole
@@ -43,4 +45,5 @@ set(Caffe2_PUBLIC_CUDA_DEPENDENCY_LIBS "")
 # List of modules that is built as part of the main Caffe2 build. For all
 # binary targets, such as Python and native binaries, they will be linked
 # automatically with these modules.
+# 作为caffe2 内部模块构建的
 set(Caffe2_MODULES "")
