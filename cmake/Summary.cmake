@@ -1,3 +1,4 @@
+# 打印累积的 Caffe2 配置摘要
 # Prints accumulated Caffe2 configuration summary
 function(caffe2_print_configuration_summary)
   message(STATUS "")
