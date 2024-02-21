@@ -1,3 +1,10 @@
+# 使用cuda的哪些库及功能：
+#   在 C++ 中使用 .so 文件（共享对象文件）通常涉及以下几个步骤：
+#       包含头文件： 如果 .so 文件提供了头文件，你需要包含这些头文件，以便在你的代码中使用 .so 文件提供的函数或类
+#        链接共享库： 在编译你的代码时，你需要告诉编译器在连接阶段使用 .so 文件。你可以通过在编译命令中使用 -l 选项来指定要链接的共享库。
+#        设置动态库路径： 在运行时，操作系统需要知道 .so 文件的位置
+#       加载动态库： 如果你的代码需要在运行时动态加载 .so 文件，你可以使用 dlopen() 和 dlsym() 等函数来加载和调用动态库中的函数。这种方法通常用于编写插件系统或动态加载插件的应用程序。 
+
 # ---[ cuda
 
 # Poor man's include guard
@@ -36,6 +43,7 @@ if(NOT CUDA_FOUND)
   return()
 endif()
 
+# cuda语言的支持:enable_language(CUDA)
 # Enable CUDA language support
 set(CUDAToolkit_ROOT "${CUDA_TOOLKIT_ROOT_DIR}")
 # Pass clang as host compiler, which according to the docs
@@ -129,6 +137,7 @@ if(CUDA_FOUND)
   endif()
 endif()
 
+# TensorRT：英伟达（NVIDIA）推出的用于深度学习推理加速的库。它通过优化、量化和并行化等技术，可以显著提高深度学习模型的推理速度，并且在英伟达的 GPU 上实现了高度的性能和效率。 
 # Optionally, find TensorRT
 if(CAFFE2_USE_TENSORRT)
   find_path(TENSORRT_INCLUDE_DIR NvInfer.h
