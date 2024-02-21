@@ -1,3 +1,7 @@
+- 主要用于在 PyTorch 中进行性能测试和基准测试。这些性能测试旨在评估 PyTorch 在不同硬件平台上的性能表现，以及不同操作和模型在 PyTorch 中的执行速度。
+  - 性能测试脚本：包括针对不同硬件平台（如 CPU、GPU、TPU 等）的性能测试脚本，以及针对不同操作和模型的性能测试脚本。
+  - 基准测试工具：包括一些基准测试工具，用于测量 PyTorch 在执行不同操作和模型时的运行时间、内存占用等性能指标。
+  - 性能测试结果：benchmarks 目录下的代码还包括了一些性能测试结果的记录和分析工具，用于分析和展示 PyTorch 在不同硬件平台上的性能表现，以及不同操作和模型的执行速度。
 # PyTorch Benchmarks
 
 This folder contains scripts that produce reproducible timings of various PyTorch features.
