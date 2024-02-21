@@ -1,3 +1,4 @@
+# MKL（Math Kernel Library）是英特尔开发的数学核心库，提供了针对英特尔处理器优化的高性能数学函数。
 find_package(MKL QUIET)
 
 if(TARGET caffe2::mkl)
