@@ -1,3 +1,7 @@
+# 安装 Caffe2 的头文件（与代码生成无关）；配置 caffe2/core/macros.h
+# ATen目标：并将其添加为一个依赖项: add_custom_target
+# 读取在 build_variables.bzl 中定义的构建列表: python -c 并回写结果到cmake
+
 # This ill-named file does a number of things:
 # - Installs Caffe2 header files (this has nothing to do with code generation)
 # - Configures caffe2/core/macros.h
