@@ -1,3 +1,5 @@
+# gflags 是一个 C++ 库，用于处理命令行参数。它允许开发人员在他们的 C++ 程序中定义和解析命令行参数，从而使程序的使用更加灵活和可配置
+
 # ---[ gflags
 
 # We will try to use the config mode first, and then manual find.
