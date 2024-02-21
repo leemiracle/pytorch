@@ -1,3 +1,6 @@
+# Neon 指令是 ARM 架构中的一种 SIMD（单指令，多数据）指令集，用于加速多媒体和信号处理等计算密集型任务。
+# Neon 指令集提供了一组针对向量数据的高性能操作，可以同时对多个数据元素执行相同的操作，从而实现并行计算
+
 # Check if the processor is an ARM and if Neon instruction are available on the machine where
 # the project is compiled.
 
