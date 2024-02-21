@@ -1,5 +1,8 @@
 # NOTE: This file is shared by internal and OSS BUCK build.
 # These load paths point to different files in internal and OSS environment
+# PyTorch 中，BUCK 文件用于描述 Facebook 内部的构建规则和依赖关系，它们是为了兼容 Facebook 的内部构建系统而存在的
+# BUCK 文件通常用于 Facebook 内部的开源项目，它们类似于 Bazel 的 BUILD 文件，用于描述项目的构建规则、依赖关系和编译选项。在 PyTorch 的源代码中，你可能会看到一些 BUCK 文件，
+#    但这些文件主要是为了 Facebook 内部的构建而存在，并不是常规用户或开发者需要关注的
 
 load("@bazel_skylib//lib:paths.bzl", "paths")
 load("//tools/build_defs:fb_native_wrapper.bzl", "fb_native")
