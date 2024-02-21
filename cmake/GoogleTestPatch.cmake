@@ -1,3 +1,4 @@
+# 在Google Test and Google Mock中替换字符串内容
 # CMake file to replace the string contents in Google Test and Google Mock
 # Usage example:
 # Patch the cmake file
