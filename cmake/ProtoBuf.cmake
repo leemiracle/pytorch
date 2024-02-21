@@ -1,3 +1,4 @@
+# protoc 等工具通过ProtoBuf 生成py h cc 文件
 # Finds Google Protocol Buffers library and compilers and extends
 # the standard cmake script with version and python generation support
 macro(custom_protobuf_find)
