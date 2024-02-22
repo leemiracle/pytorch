@@ -1,3 +1,6 @@
+使用工具分析瓶颈：python -m torch.utils.bottleneck /path/to/source/script.py [args]
+
+
 torch.utils.bottleneck
 ======================
 
