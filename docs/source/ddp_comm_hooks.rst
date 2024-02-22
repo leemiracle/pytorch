@@ -1,3 +1,5 @@
+DDP 通信钩子是一个通用接口，用于通过覆盖 DistributedDataParallel 中的普通 allreduce 来控制如何在工作人员之间通信梯度
+
 DDP Communication Hooks
 =======================
 
