@@ -1,6 +1,8 @@
 .. role:: hidden
     :class: hidden-section
 
+自动微分：算子性能分析器、正向模式、locally-disable-grad（和推理模式间的区别）、backward设置create_graph=True参数、自定义Function工具
+   不鼓励In-place计算（缓存、减少内存的使用）、梯度检查
 Automatic differentiation package - torch.autograd
 ==================================================
 
