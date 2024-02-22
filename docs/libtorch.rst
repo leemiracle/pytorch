@@ -1,3 +1,5 @@
+使用python ../tools/build_libtorch.py构建libtorch.so；使用cmake来安装
+
 libtorch (C++-only)
 ===================
 
