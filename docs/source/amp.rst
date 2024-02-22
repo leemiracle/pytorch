@@ -1,6 +1,6 @@
 .. role:: hidden
-    :class: hidden-secti精度转换on
-自动混合精度：梯度缩放、
+    :class: hidden-section
+自动混合精度：梯度缩放、精度转换
 
 Automatic Mixed Precision package - torch.amp
 =============================================
