@@ -1,3 +1,5 @@
+跟踪有局限性，因为它不能处理动态控制流，并且仅限于一次输出一个图，因此更好的选择是新的 torch.compile() 基础设施，您可以在其中使用 torch.fx 在 aten 或火炬 IR 中输出多个子图。 本教程提供了有关其工作原理的更多上下文
+
 # FX Technical Overview
 
 FX is a toolkit for pass writers to facilitate Python-to-Python transformation of `nn.Module` instances. This toolkit aims to support a subset of Python language semantics—rather than the whole Python language—to facilitate ease of implementation of transforms. Currently, this feature is under a Beta release and its API may change.
