@@ -1,3 +1,15 @@
+# 安装 python setup.py install，
+# 入口： "convert-caffe2-to-onnx = caffe2.python.onnx.bin.conversion:caffe2_to_onnx"  "torchrun = torch.distributed.run:main"
+# cmdclass: bdist_wheel  build_ext clean install sdist
+#  本地开发develop(重新生成--cmake),通过创建链接或添加路径的方式，将项目源代码链接到 Python 环境中，使得在开发过程中对项目的修改能够立即生效，从而方便开发和调试
+
+# 设置--cmake-only 参数
+
+# 代码分段： 用户参数设置、 cmake: 依赖（build_caffe2）
+# cmake 类：defines（添加cmake的参数列表） cache_variables（从缓存文件中取） generate生成本地build文件 build生成可执行文件
+
+# 包的数据文件：正则匹配
+
 # Welcome to the PyTorch setup.py.
 #
 # Environment variables you are probably interested in:
