@@ -1343,6 +1343,9 @@ def main():
         "packaged/autograd/*",
         "packaged/autograd/templates/*",
     ]
+    # 先安裝'dependency_links', 'setup_requires'
+    # dist.parse_command_line
+    # 按顺序运行commands的命令：ensure_finalized() run()
     setup(
         name=package_name,
         version=version,
@@ -1352,13 +1355,13 @@ def main():
         ),
         long_description=long_description,
         long_description_content_type="text/markdown",
-        ext_modules=extensions,
-        cmdclass=cmdclass,
-        packages=packages,
-        entry_points=entry_points,
-        install_requires=install_requires,
-        extras_require=extras_require,
-        package_data={
+        ext_modules=extensions, # 用于指定需要编译的 C/C++ 扩展模块。
+        cmdclass=cmdclass, # 用于指定自定义的命令类，以定制构建、打包和发布过程中的行为
+        packages=packages, # 指定哪些包应该包含在你的发布包中
+        entry_points=entry_points, # 用于声明可执行程序的入口点
+        install_requires=install_requires, # 用于指定包的依赖项
+        extras_require=extras_require, # 用于指定额外的依赖项，以便在安装包时可选择安装
+        package_data={ # 指定哪些包应该包含在你的发布包中的数据文件。这些数据文件可能包括配置文件、模板文件、静态资源等
             "torch": torch_package_data,
             "torchgen": torchgen_package_data,
             "caffe2": [
