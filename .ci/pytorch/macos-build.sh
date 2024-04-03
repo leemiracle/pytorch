@@ -15,7 +15,7 @@ fi
 # For example, `clang` will be `sccache clang`, but `sccache clang` will not become `sccache sccache clang`.
 # The way this is done is by detecting the command of the parent pid of the current process and checking whether
 # that is sccache, and wrapping sccache around the process if its parent were not already sccache.
-function write_sccache_stub() {
+function write_sccache_stub() { # 为了在适当的场景下利用 sccache 提高编译性能，同时防止循环或重复使用 sccache
   output=$1
   binary=$(basename "${output}")
 
@@ -23,7 +23,7 @@ function write_sccache_stub() {
   chmod a+x "${output}"
 }
 
-if which sccache > /dev/null; then
+if which sccache > /dev/null; then # 存在sccache则使用
   # Create temp directory for sccache shims
   tmp_dir=$(mktemp -d)
   trap 'rm -rfv ${tmp_dir}' EXIT
@@ -33,7 +33,7 @@ if which sccache > /dev/null; then
   export PATH="${tmp_dir}:$PATH"
 fi
 
-cross_compile_arm64() {
+cross_compile_arm64() { # 交叉编译arm64
   # Cross compilation for arm64
   # Explicitly set USE_DISTRIBUTED=0 to align with the default build config on mac. This also serves as the sole CI config that tests
   # that building with USE_DISTRIBUTED=0 works at all. See https://github.com/pytorch/pytorch/issues/86448
@@ -50,7 +50,7 @@ compile_x86_64() {
   USE_DISTRIBUTED=0 WERROR=1 python setup.py bdist_wheel --plat-name=macosx_10_9_x86_64
 }
 
-build_lite_interpreter() {
+build_lite_interpreter() { # 精简版解释器
     echo "Testing libtorch (lite interpreter)."
 
     CPP_BUILD="$(pwd)/../cpp_build"
