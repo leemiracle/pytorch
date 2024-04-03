@@ -19,7 +19,7 @@ retry () {
 # - 1st arg:  code to add
 # - remaining args:  names of traps to modify
 #
-trap_add() {
+trap_add() { # 向已存在的信号处理程序添加新的命令，而不是覆盖原有的信号处理逻辑
     trap_add_cmd=$1; shift || fatal "${FUNCNAME[0]} usage error"
     for trap_add_name in "$@"; do
         trap -- "$(
@@ -110,7 +110,7 @@ EOF
   sudo chmod +x /usr/local/cuda/bin/nvcc
 }
 
-function install_monkeytype {
+function install_monkeytype { # MonkeyType 通过追踪 Python 程序在运行时的函数调用，收集参数类型和返回值类型数据，然后根据这些数据为相应的函数签名添加类型注解
   # Install MonkeyType
   pip_install MonkeyType
 }
@@ -158,7 +158,7 @@ function install_torchvision() {
   fi
 }
 
-function install_torchrec_and_fbgemm() {
+function install_torchrec_and_fbgemm() { # pip安装git中的软件
   local torchrec_commit
   torchrec_commit=$(get_pinned_commit torchrec)
   local fbgemm_commit
@@ -187,7 +187,7 @@ function checkout_install_torchdeploy() {
   local commit
   commit=$(get_pinned_commit multipy)
   pushd ..
-  git clone --recurse-submodules https://github.com/pytorch/multipy.git
+  git clone --recurse-submodules https://github.com/pytorch/multipy.git # 允许您通过在单个C++进程中运行多个 Python 解释器来解决 GIL 问题
   pushd multipy
   git checkout "${commit}"
   python multipy/runtime/example/generate_examples.py
@@ -200,7 +200,7 @@ function test_torch_deploy(){
  pushd ..
  pushd multipy
  ./multipy/runtime/build/test_deploy
- ./multipy/runtime/build/test_deploy_gpu
+ ./multipy/runtime/build/test_deploy_gpu 
  popd
  popd
 }
@@ -222,7 +222,7 @@ function checkout_install_torchbench() {
   popd
 }
 
-function print_sccache_stats() {
+function print_sccache_stats() { # sccache 是一个开源的编译缓存工具，主要用于加速软件项目的编译过程
   echo 'PyTorch Build Statistics'
   sccache --show-stats
 
